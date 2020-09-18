@@ -67,6 +67,10 @@ def checkCollision():
           snake[0].getCenter().getY() == Apple.getCenter().getY()):
         newApple()
         grow()
+    for j in range(3, size):
+        if (snake[0].getCenter().getX() == snake[j].getCenter().getX() and
+            snake[0].getCenter().getY() == snake[j].getCenter().getY()):
+            return True
   
     
 def newApple():
