@@ -89,6 +89,15 @@ def main():
 
     spawn()
 
+    instructions = Text(Point(300,50),"Use W, A, S, D to move \nand Escape to exit. Press any key to start... ")
+    instructions.setOutline("white")
+    instructions.setSize(16)
+    instructions.draw(win)
+    
+    win.getKey()
+
+    instructions.undraw()
+    
     while(lost!=True):
         k = win.checkKey()
         time.sleep(0.15)
