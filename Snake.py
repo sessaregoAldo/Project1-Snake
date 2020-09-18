@@ -1,16 +1,29 @@
 from graphics import *
 snake = [0]*4
 size = 4
-win = GraphWin("T I N Y   S N E K", 600, 500)
-win.setBackground("lightblue")
+Score = 0
+
+scoreboard = Text(Point(420,130),"Score: " + str(Score))
+scoreboard.setOutline("white")
+scoreboard.setSize(16)
+
+
+win = GraphWin("T I N Y   S N E K", 600, 600)
+win.setBackground("Black")
+Border = Rectangle(Point(52,164), Point(547,554))
+Border.setFill("light Green")
+Border.setOutline("Dark Green")
+Border.setWidth(15)
+Border.draw(win)
+scoreboard.draw(win)
 
 def spawn():
     global snake
     snake = [0]*4
     size = 4
     for i in range(size):
-        snake[i] = Rectangle(Point(300-(i*5), 252),Point(300-(i*5)+4, 248))
-        snake[i].setFill("black")
+        snake[i] = Rectangle(Point(300-(i*15), 247),Point(300-(i*15)+14, 261))
+        snake[i].setFill("cyan")
         snake[i].draw(win)
         
 def move(k, win):
@@ -23,13 +36,13 @@ def move(k, win):
         
     snake[0] = snake[1].clone()
     if direction == 1:
-        snake[0].move(5,0)
+        snake[0].move(15,0)
     elif direction == 2:
-        snake[0].move(0,5)
+        snake[0].move(0,15)
     elif direction == 3:
-        snake[0].move(-5,0)
+        snake[0].move(-15,0)
     elif direction == 4:
-        snake[0].move(0,-5)
+        snake[0].move(0,-15)
 
     snake[0].draw(win)
 
@@ -42,10 +55,10 @@ def gameOver():
     GameOver.draw(win)
 
 def checkCollision():
-    if (snake[0].getCenter().getX() > 600 or
-        snake[0].getCenter().getX() < 0 or
-        snake[0].getCenter().getY() < 0 or
-        snake[0].getCenter().getY() > 500):
+    if (snake[0].getCenter().getX() > 545 or
+        snake[0].getCenter().getX() < 60 or
+        snake[0].getCenter().getY() < 175 or
+        snake[0].getCenter().getY() > 545):
         return True
     
         
@@ -63,7 +76,7 @@ def checkCollision():
 
 def main():
 
-    START = Rectangle(Point(295, 252),Point(299, 248))
+    START = Rectangle(Point(60, 170),Point(74, 186))
     START.setFill("Red")
     START.setOutline("red")
     START.draw(win)
@@ -78,8 +91,11 @@ def main():
 
     while(lost!=True):
         k = win.checkKey()
-        time.sleep(0.1)
-        if (k == "d" and direction!=3):
+        time.sleep(0.15)
+        if checkCollision() == True:
+            lost = True
+            gameOver()
+        elif (k == "d" and direction!=3):
             direction = 1
             move(k, win)
         elif (k == "s" and direction!=4):
@@ -94,9 +110,7 @@ def main():
         elif k == "Escape":
             lost = True
             gameOver()
-        elif checkCollision() == True:
-            lost = True
-            gameOver()
+        
         else:
             move(k, win)
 
