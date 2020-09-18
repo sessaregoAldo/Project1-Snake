@@ -1,4 +1,6 @@
 from graphics import *
+from random import *
+
 snake = [0]*4
 size = 4
 Score = 0
@@ -60,11 +62,34 @@ def checkCollision():
         snake[0].getCenter().getY() < 175 or
         snake[0].getCenter().getY() > 545):
         return True
-    
-        
-#def newApple():
 
-#def grow():
+    elif (snake[0].getCenter().getX() == Apple.getCenter().getX() and
+          snake[0].getCenter().getY() == Apple.getCenter().getY()):
+        newApple()
+        grow()
+  
+    
+def newApple():
+    
+    dx = (randint(0, 31))*15
+    dy = (randint(0, 24))*15
+    global Apple
+    try :
+        Apple.undraw()  
+    except :
+        pass  
+    
+    Apple = Rectangle(Point(60+dx, 172+dy),Point(74+dx, 186+dy))
+    Apple.setFill("Red")
+    Apple.setOutline("darkred")
+    Apple.draw(win)
+
+def grow():
+    global size
+    size = size +2
+    snake.append(snake[size-3].clone())
+    snake.append(snake[size-3].clone())
+    
 
 #def loss():
 
@@ -75,12 +100,9 @@ def checkCollision():
 
 
 def main():
-
-    START = Rectangle(Point(60, 170),Point(74, 186))
-    START.setFill("Red")
-    START.setOutline("red")
-    START.draw(win)
     
+    newApple()
+        
     global lost
     lost = False
     
