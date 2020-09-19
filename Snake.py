@@ -9,7 +9,6 @@ scoreboard = Text(Point(420,130),"Score: " + str(Score))
 scoreboard.setOutline("white")
 scoreboard.setSize(16)
 
-
 win = GraphWin("T I N Y   S N E K", 600, 600)
 win.setBackground("Black")
 Border = Rectangle(Point(52,164), Point(547,554))
@@ -65,6 +64,7 @@ def checkCollision():
 
     elif (snake[0].getCenter().getX() == Apple.getCenter().getX() and
           snake[0].getCenter().getY() == Apple.getCenter().getY()):
+        score()
         newApple()
         grow()
     for j in range(3, size):
@@ -93,6 +93,16 @@ def grow():
     size = size +2
     snake.append(snake[size-3].clone())
     snake.append(snake[size-3].clone())
+
+def score():
+    Score = int(((size-2)/2)*10)
+    scoreboard = Text(Point(420,130),"Score: " + str(Score))
+    cover = Rectangle(Point(350,120), Point(480,140))
+    cover.setFill("Black")
+    cover.draw(win)
+    scoreboard.setOutline("white")
+    scoreboard.setSize(16)
+    scoreboard.draw(win)
     
 
 #def loss():
