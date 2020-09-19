@@ -73,20 +73,29 @@ def checkCollision():
             return True
   
     
-def newApple():
+
     
+def newApple():
+
     dx = (randint(0, 31))*15
     dy = (randint(0, 24))*15
+    valid = True
+    
     global Apple
     try :
         Apple.undraw()  
     except :
         pass  
-    
-    Apple = Rectangle(Point(60+dx, 172+dy),Point(74+dx, 186+dy))
-    Apple.setFill("Red")
-    Apple.setOutline("darkred")
-    Apple.draw(win)
+    for i in range(size-1):
+        if (snake[i].getCenter().getX() == Apple.getCenter().getX() and
+          snake[i].getCenter().getY() == Apple.getCenter().getY()):
+            newApple()
+            valid = False
+    if valid==True:
+        Apple = Rectangle(Point(60+dx, 172+dy),Point(74+dx, 186+dy))
+        Apple.setFill("Red")
+        Apple.setOutline("darkred")
+        Apple.draw(win)
 
 def grow():
     global size
@@ -115,7 +124,7 @@ def score():
 
 def main():
     
-    newApple()
+    
         
     global lost
     lost = False
@@ -124,6 +133,7 @@ def main():
     direction = 1
 
     spawn()
+    newApple()
 
     instructions = Text(Point(300,50),"Use W, A, S, D to move \nand Escape to exit. Press any key to start... ")
     instructions.setOutline("white")
