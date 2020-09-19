@@ -16,7 +16,6 @@ Border.setFill("light Green")
 Border.setOutline("Dark Green")
 Border.setWidth(15)
 Border.draw(win)
-scoreboard.draw(win)
 
 def spawn():
     global snake
@@ -26,7 +25,36 @@ def spawn():
         snake[i] = Rectangle(Point(300-(i*15), 247),Point(300-(i*15)+14, 261))
         snake[i].setFill("cyan")
         snake[i].draw(win)
-        
+
+def destroy():
+    global size
+    for i in range(size):
+        snake[i].undraw()
+    size =4
+
+def difficulty():
+    global speed
+    diff = Text(Point(300,80),"Select difficulty:\n1. Easy\n2. Normal\n3. Hard")
+    diff.setOutline("white")
+    diff.setSize(16)
+    diff.draw(win)
+    k = win.checkKey()
+    while (k!="1" or k!="2" or k!="3"):
+        k = win.getKey()
+        if (k=="1"):
+            
+            print(k)
+            speed = 0.15
+            break
+        elif (k=="2"):
+            speed = 0.1
+            break
+        elif (k=="3"):
+            speed = 0.075
+            break
+    diff.undraw()
+
+    
 def move(k, win):
     max = size-1
     snake[max].undraw()
@@ -50,7 +78,8 @@ def move(k, win):
 
 
 def gameOver():
-    GameOver = Text(Point(300,50),"Game Over. Press any key to exit...")
+    global GameOver
+    GameOver = Text(Point(300,50),"Game Over. \n Press 'R' to Retry or Esc to Exit.")
     GameOver.setOutline("white")
     GameOver.setSize(16)
     GameOver.draw(win)
@@ -64,9 +93,10 @@ def checkCollision():
 
     elif (snake[0].getCenter().getX() == Apple.getCenter().getX() and
           snake[0].getCenter().getY() == Apple.getCenter().getY()):
-        score()
         newApple()
         grow()
+        score()
+        
     for j in range(3, size):
         if (snake[0].getCenter().getX() == snake[j].getCenter().getX() and
             snake[0].getCenter().getY() == snake[j].getCenter().getY()):
@@ -76,7 +106,7 @@ def checkCollision():
 
     
 def newApple():
-
+    
     dx = (randint(0, 31))*15
     dy = (randint(0, 24))*15
     valid = True
@@ -86,9 +116,10 @@ def newApple():
         Apple.undraw()  
     except :
         pass  
-    for i in range(size-1):
-        if (snake[i].getCenter().getX() == Apple.getCenter().getX() and
-          snake[i].getCenter().getY() == Apple.getCenter().getY()):
+    for i in range(size):
+        if (snake[i].getP1().getX() == (60+dx) and
+            snake[i].getP1().getY() == (74+dx)):
+            print("Oops. Recalculating...")
             newApple()
             valid = False
     if valid==True:
@@ -104,7 +135,7 @@ def grow():
     snake.append(snake[size-3].clone())
 
 def score():
-    Score = int(((size-2)/2)*10)
+    Score = int(((size-4)/2)*10)
     scoreboard = Text(Point(420,130),"Score: " + str(Score))
     cover = Rectangle(Point(350,120), Point(480,140))
     cover.setFill("Black")
@@ -125,7 +156,8 @@ def score():
 def main():
     
     
-        
+    difficulty()
+    
     global lost
     lost = False
     
@@ -134,8 +166,9 @@ def main():
 
     spawn()
     newApple()
+    score()
 
-    instructions = Text(Point(300,50),"Use W, A, S, D to move \nand Escape to exit. Press any key to start... ")
+    instructions = Text(Point(300,50),"Use W, A, S, D to move \nand Escape to end the game. Press any key to start... ")
     instructions.setOutline("white")
     instructions.setSize(16)
     instructions.draw(win)
@@ -146,7 +179,7 @@ def main():
     
     while(lost!=True):
         k = win.checkKey()
-        time.sleep(0.15)
+        time.sleep(speed)
         if checkCollision() == True:
             lost = True
             gameOver()
@@ -172,8 +205,15 @@ def main():
         
 
     
-    win.getKey()
-    win.close()
+    end = win.checkKey()
+    while(end!="r" or end!="Escape"):
+        end = win.getKey()
+        if end =="r":
+            destroy()
+            GameOver.undraw()
+            main()
+        elif end == "Escape":
+            win.close()
     
 main()
     
