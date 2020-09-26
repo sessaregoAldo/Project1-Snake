@@ -42,9 +42,7 @@ def difficulty():
     while (k!="1" or k!="2" or k!="3"):
         k = win.getKey()
         if (k=="1"):
-            
-            print(k)
-            speed = 0.15
+            speed = 0.125
             break
         elif (k=="2"):
             speed = 0.1
@@ -143,6 +141,15 @@ def score():
     scoreboard.setOutline("white")
     scoreboard.setSize(16)
     scoreboard.draw(win)
+
+def pause():
+    Pause = Text(Point(300,50), "Game Paused\nPress any key to continue...")
+    Pause.setOutline("White")
+    Pause.setSize(16)
+    Pause.draw(win)
+    p = win.getKey()
+    Pause.undraw()
+    
     
 
 #def loss():
@@ -156,7 +163,7 @@ def score():
 def main():
     
     
-    difficulty()
+    
     
     global lost
     lost = False
@@ -168,7 +175,9 @@ def main():
     newApple()
     score()
 
-    instructions = Text(Point(300,50),"Use W, A, S, D to move \nand Escape to end the game. Press any key to start... ")
+    difficulty()
+
+    instructions = Text(Point(300,50),"Use W, A, S, D (Or arrow keys) to move \nand Escape to pause the game. Press any key to start... ")
     instructions.setOutline("white")
     instructions.setSize(16)
     instructions.draw(win)
@@ -183,21 +192,20 @@ def main():
         if checkCollision() == True:
             lost = True
             gameOver()
-        elif (k == "d" and direction!=3):
+        elif ((k == "d" or k == "Right") and direction!=3):
             direction = 1
             move(k, win)
-        elif (k == "s" and direction!=4):
+        elif ((k == "s" or k == "Down") and direction!=4):
             direction = 2
             move(k, win)
-        elif (k == 'a' and direction!=1):
+        elif ((k == "a" or k == "Left") and direction!=1):
             direction  = 3
             move(k, win)
-        elif (k == 'w' and direction!=2):
+        elif ((k == "w" or k == "Up") and direction!=2):
             direction  = 4
             move(k, win)
         elif k == "Escape":
-            lost = True
-            gameOver()
+            pause()
         
         else:
             move(k, win)
