@@ -157,7 +157,15 @@ def pause():
 #def win():
 
 
-        
+def instructions():
+    instructions = Text(Point(300,50),"Use W, A, S, D (Or arrow keys) to move \nand Escape to pause the game. Press any key to start... ")
+    instructions.setOutline("white")
+    instructions.setSize(16)
+    instructions.draw(win)
+    
+    win.getKey()
+
+    instructions.undraw()
 
 
 def main():
@@ -176,15 +184,8 @@ def main():
     score()
 
     difficulty()
-
-    instructions = Text(Point(300,50),"Use W, A, S, D (Or arrow keys) to move \nand Escape to pause the game. Press any key to start... ")
-    instructions.setOutline("white")
-    instructions.setSize(16)
-    instructions.draw(win)
+    instructions()
     
-    win.getKey()
-
-    instructions.undraw()
     
     while(lost!=True):
         k = win.checkKey()
