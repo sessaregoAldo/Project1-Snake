@@ -17,20 +17,67 @@ Border.setOutline("Dark Green")
 Border.setWidth(15)
 Border.draw(win)
 
-def spawn():
-    global snake
-    snake = [0]*4
-    size = 4
-    for i in range(size):
-        snake[i] = Rectangle(Point(300-(i*15), 247),Point(300-(i*15)+14, 261))
-        snake[i].setFill("cyan")
-        snake[i].draw(win)
+class Snake():
+    def __init__(self):
+        self.size = 4
+        self.snake = [0]*4
+    
 
-def destroy():
-    global size
-    for i in range(size):
-        snake[i].undraw()
-    size =4
+    def spawn(self):
+        self.snake = [0]*4
+        self.size = 4
+        for i in range(self.size):
+            self.snake[i] = Rectangle(Point(300-(i*15), 247),Point(300-(i*15)+14, 261))
+            self.snake[i].setFill("cyan")
+            self.snake[i].draw(win)
+
+    def destroy(self):
+        for i in range(self.size):
+            self.snake[i].undraw()
+
+    def grow(self):
+        self.size = self.size +2
+        self.snake.append(self.snake[self.size-3].clone())
+        self.snake.append(self.snake[self.size-3].clone())
+
+    def move(self, k, win):
+        max = self.size-1
+        self.snake[max].undraw()
+        
+        while max > 0:
+            self.snake[max] = self.snake[max-1]
+            max = max -1
+            
+        self.snake[0] = self.snake[1].clone()
+        if direction == 1:
+            self.snake[0].move(15,0)
+        elif direction == 2:
+            self.snake[0].move(0,15)
+        elif direction == 3:
+            self.snake[0].move(-15,0)
+        elif direction == 4:
+            self.snake[0].move(0,-15)
+
+        self.snake[0].draw(win)
+
+    def checkCollision(self):
+        if (self.snake[0].getCenter().getX() > 545 or
+            self.snake[0].getCenter().getX() < 60 or
+            self.snake[0].getCenter().getY() < 175 or
+            self.snake[0].getCenter().getY() > 545):
+            return True
+
+        elif (self.snake[0].getCenter().getX() == Apple.getCenter().getX() and
+              self.snake[0].getCenter().getY() == Apple.getCenter().getY()):
+            newApple()
+            self.grow()
+            score()
+            
+        for j in range(3, self.size):
+            if (self.snake[0].getCenter().getX() == self.snake[j].getCenter().getX() and
+                self.snake[0].getCenter().getY() == self.snake[j].getCenter().getY()):
+                return True
+  
 
 def difficulty():
     global speed
@@ -53,25 +100,7 @@ def difficulty():
     diff.undraw()
 
     
-def move(k, win):
-    max = size-1
-    snake[max].undraw()
-    
-    while max > 0:
-        snake[max] = snake[max-1]
-        max = max -1
-        
-    snake[0] = snake[1].clone()
-    if direction == 1:
-        snake[0].move(15,0)
-    elif direction == 2:
-        snake[0].move(0,15)
-    elif direction == 3:
-        snake[0].move(-15,0)
-    elif direction == 4:
-        snake[0].move(0,-15)
 
-    snake[0].draw(win)
 
 
 
@@ -82,24 +111,7 @@ def gameOver():
     GameOver.setSize(16)
     GameOver.draw(win)
 
-def checkCollision():
-    if (snake[0].getCenter().getX() > 545 or
-        snake[0].getCenter().getX() < 60 or
-        snake[0].getCenter().getY() < 175 or
-        snake[0].getCenter().getY() > 545):
-        return True
 
-    elif (snake[0].getCenter().getX() == Apple.getCenter().getX() and
-          snake[0].getCenter().getY() == Apple.getCenter().getY()):
-        newApple()
-        grow()
-        score()
-        
-    for j in range(3, size):
-        if (snake[0].getCenter().getX() == snake[j].getCenter().getX() and
-            snake[0].getCenter().getY() == snake[j].getCenter().getY()):
-            return True
-  
     
 
     
@@ -113,24 +125,13 @@ def newApple():
     try :
         Apple.undraw()  
     except :
-        pass  
-    for i in range(size):
-        if (snake[i].getP1().getX() == (60+dx) and
-            snake[i].getP1().getY() == (74+dx)):
-            print("Oops. Recalculating...")
-            newApple()
-            valid = False
-    if valid==True:
-        Apple = Rectangle(Point(60+dx, 172+dy),Point(74+dx, 186+dy))
-        Apple.setFill("Red")
-        Apple.setOutline("darkred")
-        Apple.draw(win)
+        pass
+    Apple = Rectangle(Point(60+dx, 172+dy),Point(74+dx, 186+dy))
+    Apple.setFill("Red")
+    Apple.setOutline("darkred")
+    Apple.draw(win)
 
-def grow():
-    global size
-    size = size +2
-    snake.append(snake[size-3].clone())
-    snake.append(snake[size-3].clone())
+
 
 def score():
     Score = int(((size-4)/2)*10)
@@ -179,7 +180,8 @@ def main():
     global direction
     direction = 1
 
-    spawn()
+    snek = Snake()
+    snek.spawn()
     newApple()
     score()
 
@@ -190,26 +192,26 @@ def main():
     while(lost!=True):
         k = win.checkKey()
         time.sleep(speed)
-        if checkCollision() == True:
+        if snek.checkCollision() == True:
             lost = True
             gameOver()
         elif ((k == "d" or k == "Right") and direction!=3):
             direction = 1
-            move(k, win)
+            snek.move(k, win)
         elif ((k == "s" or k == "Down") and direction!=4):
             direction = 2
-            move(k, win)
+            snek.move(k, win)
         elif ((k == "a" or k == "Left") and direction!=1):
             direction  = 3
-            move(k, win)
+            snek.move(k, win)
         elif ((k == "w" or k == "Up") and direction!=2):
             direction  = 4
-            move(k, win)
+            snek.move(k, win)
         elif k == "Escape":
             pause()
         
         else:
-            move(k, win)
+            snek.move(k, win)
 
         
 
@@ -218,7 +220,7 @@ def main():
     while(end!="r" or end!="Escape"):
         end = win.getKey()
         if end =="r":
-            destroy()
+            snek.destroy()
             GameOver.undraw()
             main()
         elif end == "Escape":
